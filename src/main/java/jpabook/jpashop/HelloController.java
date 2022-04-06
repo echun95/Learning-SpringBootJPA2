@@ -10,6 +10,6 @@ public class HelloController {
     @GetMapping
     public String hello(Model model){
         model.addAttribute("data", "hello!");
-        return "hello";
+        return "home";
     }
 }
