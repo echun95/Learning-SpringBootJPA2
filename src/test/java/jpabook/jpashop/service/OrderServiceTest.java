@@ -1,9 +1,6 @@
 package jpabook.jpashop.service;
 
-import jpabook.jpashop.domain.Address;
-import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.exception.NotEnoughStockException;
@@ -17,6 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -98,5 +97,19 @@ public class OrderServiceTest {
         member.setAddress(new Address("서울", "경기", "123-123"));
         em.persist(member);
         return member;
+    }
+
+    @Test
+    public void manyToOneTest(){
+        List<OrderItem> resultList = em.createQuery(
+                "select oi from OrderItem oi " +
+                        "join fetch oi.order o " +
+                        "join fetch oi.item i ", OrderItem.class
+        ).getResultList();
+        for (OrderItem orderItem : resultList) {
+            System.out.println("orderItem.order.orderId = " + orderItem.getOrder().getId());
+            System.out.println("orderItem.item.itemId = " + orderItem.getItem().getId());
+            System.out.println("orderItem.item.itemName = " + orderItem.getItem().getName());
+        }
     }
 }
